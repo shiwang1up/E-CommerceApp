@@ -15,13 +15,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Button} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 
 GoogleSignin.configure({
-  webClientId: '702508659964-463vi95ohn1vhpbbgrf33emns95ai5e6.apps.googleusercontent.com',
+  webClientId:
+    '702508659964-94ud967o37s06qt6d1siiiukiov33n2j.apps.googleusercontent.com',
   offlineAccess: true,
 });
 
@@ -30,76 +32,110 @@ const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const handleGoogleSignIn = async () => {
-    try {
-      // First, make sure user is signed out
-      await GoogleSignin.signOut();
+    const handleGoogleSignIn = async () => {
+      try {
+        // First, make sure user is signed out
+        await GoogleSignin.signOut();
 
-      // Check if your device supports Google Play
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+        // Check if your device supports Google Play
+        await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
 
-      // Get user ID token
-      const userInfo = await GoogleSignin.signIn();
-      console.log('Success:', userInfo);
-      navigation.navigate('Main');
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('User cancelled the login flow');
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log('Sign in is in progress');
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log('Play services not available');
-      } else {
-        console.log('Error:', error.code, error.message);
-        console.error('Full error object:', error);
-      }
-    }
-  };
-
-  const handleLogin = async () => {
-    try {
-      console.log('Attempting to log in with email:', email);
-      console.log('Attempting to log in with password:', password);
-
-      const response = await fetch(
-        'https://electronic-ecommerce.onrender.com/api/customerLogin',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            Email: email,
-            Password: password,
-          }),
-        },
-      );
-
-      console.log('Response status:', response.status); // Log the response status
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response from server:', errorText);
-        alert(
-          'Login failed. Please check your credentials or try again later.',
-        );
-        return;
-      }
-
-      const data = await response.json();
-      console.log('Response data:', data); // Log the data received from the server
-
-      if (data.status === 'SUCCESS') {
-        alert(data.message);
+        // Get user ID token
+        const userInfo = await GoogleSignin.signIn();
+        console.log('Success:', userInfo);
         navigation.navigate('Main');
-      } else {
-        alert(data.message || 'Login failed');
+      } catch (error) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          console.log('User cancelled the login flow');
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          console.log('Sign in is in progress');
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          console.log('Play services not available');
+        } else {
+          console.log('Error:', error.code, error.message);
+          console.error('Full error object:', error);
+        }
       }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      alert('An error occurred. Please try again later.');
-    }
-  };
+    };
+
+//  async function onGoogleButtonPress() {
+//    try {
+//      // Check if your device supports Google Play
+//      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+//      // Get the users ID token
+//      const signInResult = await GoogleSignin.signIn();
+//
+//      // Try the new style of google-sign in result, from v13+ of that module
+//      const idToken = signInResult.data?.idToken;
+//      if (!idToken) {
+//        // if you are using older versions of google-signin, try old style result
+//        const idToken = signInResult.idToken;
+//      }
+//      if (!idToken) {
+//        throw new Error('No ID token found');
+//      }
+//
+//      // Create a Google credential with the token
+//      const googleCredential = auth.GoogleAuthProvider.credential(
+//        signInResult.data.token,
+//      );
+//
+//      // Sign-in the user with the credential
+//      auth().signInWithCredential(googleCredential);
+//      navigation.navigate('Main');
+//      console.log('Signin Successful!!!');
+//    } catch (err) {
+//      console.log(err);
+//    }
+//  }
+
+const handleLogin = async () => {
+  // First navigate to the Main stack
+  navigation.navigate('Main', { screen: 'Dash' });
+};
+    // try {
+    //   console.log('Attempting to log in with email:', email);
+    //   console.log('Attempting to log in with password:', password);
+
+    //   const response = await fetch(
+    //     'https://electronic-ecommerce.onrender.com/api/customerLogin',
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify({
+    //         Email: email,
+    //         Password: password,
+    //       }),
+    //     },
+    //   );
+
+    //   console.log('Response status:', response.status); // Log the response status
+
+    //   if (!response.ok) {
+    //     const errorText = await response.text();
+    //     console.error('Error response from server:', errorText);
+    //     alert(
+    //       'Login failed. Please check your credentials or try again later.',
+    //     );
+    //     return;
+    //   }
+
+    //   const data = await response.json();
+    //   console.log('Response data:', data); // Log the data received from the server
+
+    //   if (data.status === 'SUCCESS') {
+    //     alert(data.message);
+    //     navigation.navigate('Main');
+    //   } else {
+    //     alert(data.message || 'Login failed');
+    //   }
+    // } catch (error) {
+    //   console.error('Error logging in:', error);
+    //   alert('An error occurred. Please try again later.');
+    // }
+  // };
   return (
     <SafeAreaView showsVerticalScrollIndicator={false}>
       <ImageBackground
@@ -177,7 +213,8 @@ const Login = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={handleGoogleSignIn}
+//            onPress={onGoogleButtonPress}
+onPress={handleGoogleSignIn}
             style={styles.socialLoginView3}>
             <Icon
               name="google"

@@ -15,11 +15,13 @@ import CartScreen from './screens/CartScreen';
 import CategoryScreen from './screens/CategoryScreen';
 import CarouselScreen from './screens/CarouselScreen';
 import Login from './screens/Login';
-
+import Dashboard from './screens/Dashboard/Dashboard';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 enableScreens();
+
+
 
 
 // Stack navigator for Home tab to handle category navigation
@@ -58,7 +60,6 @@ const MainTabs = () => {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
-            // console.log('Route:', route.name, 'Focused:', focused);
             let iconName;
 
             if (route.name === 'Home') {
@@ -67,6 +68,8 @@ const MainTabs = () => {
               iconName = focused ? 'person' : 'person-outline';
             } else if (route.name === 'Cart') {
               iconName = focused ? 'cart' : 'cart-outline';
+            }else if (route.name === 'Dash') { // Added Dash condition
+              iconName = focused ? 'grid' : 'grid-outline'; // Example icon
             }
              // Add this line for debugging
 
@@ -81,6 +84,7 @@ const MainTabs = () => {
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
         <Tab.Screen name="Cart" component={CartScreen} />
+        <Tab.Screen name="Dash" component={Dashboard} />
       </Tab.Navigator>
 
   );
